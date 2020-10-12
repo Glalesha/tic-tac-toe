@@ -36,6 +36,7 @@ const Cell: React.FC<Props> = ({ mark, row, column, disabled }) => {
 
   const placeMark = () => {
     if (mark || disabled) return;
+    console.log(playerTurn, row, column);
 
     dispatch(addTurn({ grid, playerTurn }));
     dispatch(changeGrid({ playerTurn, row, column }));
@@ -59,9 +60,11 @@ const Cell: React.FC<Props> = ({ mark, row, column, disabled }) => {
       ctx.current.closePath();
       ctx.current.stroke();
     } else if (mark === 2) {
+      ctx.current.beginPath();
       ctx.current.strokeStyle = "#ffc239";
       ctx.current.arc(25, 25, 20, Math.PI * 2, false);
       ctx.current.stroke();
+      ctx.current.closePath();
     }
   };
 

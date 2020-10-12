@@ -1,25 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import Grid from "../Grid/Grid";
-import NewGame from "../NewGame/NewGame";
+import GameData from "../GameData/GameData";
 import GameHistory from "../GameHistory/GameHistory";
-import NextMove from "../NextMove/NextMove";
+import NewGame from "../NewGame/NewGame";
 import { useSelector, useDispatch } from "react-redux";
 
 const Main: React.FC<{}> = () => {
-  //@ts-ignore
-  const gameResult = useSelector((state) => state.gameResult);
-
   return (
     <Wrapper>
       <Title>
         tic <GreenText>tac</GreenText> toe
       </Title>
-      <NextMove />
+      <GameData />
       <Grid />
       <NewGame />
       <GameHistory />
-      <h1>{gameResult}</h1>
     </Wrapper>
   );
 };

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Cell from "../Cell/Cell";
 import { useSelector, useDispatch } from "react-redux";
 import setGameResult from "../../store/actions/setGameResult";
+import { RootState } from "../../types";
 
 interface Props {}
 
@@ -10,16 +11,16 @@ interface Props {}
 
 const Grid: React.FC<Props> = ({}) => {
   const dispatch = useDispatch();
-  const grid = useSelector((state: any) => state.grid);
-  const gameResult = useSelector((state: any) => state.gameResult);
-  const playerTurn = useSelector((state: any) => state.playerTurn);
+  const grid = useSelector((state: RootState) => state.grid);
+  const gameResult = useSelector((state: RootState) => state.gameResult);
+  const playerTurn = useSelector((state: RootState) => state.playerTurn);
 
   useEffect(() => {
     checkGameEnd(grid);
   }, [grid]);
 
   const checkGameEnd = (grid: any) => {
-    let gameResult = "continues";
+    let gameResult = { status: "continues", winner: 0 };
 
     for (let i = 0; i < grid.length; i++) {
       let previousItem: any;
@@ -34,7 +35,10 @@ const Grid: React.FC<Props> = ({}) => {
         }
 
         if (previousItem === grid[i][j] && grid[i].length - 1 === j) {
-          gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
+          gameResult = {
+            status: "win",
+            winner: playerTurn === 1 ? 2 : 1,
+          };
         }
 
         if (previousItem !== grid[i][j]) {
@@ -56,7 +60,10 @@ const Grid: React.FC<Props> = ({}) => {
         }
 
         if (previousItem === grid[j][i] && grid.length - 1 === j) {
-          gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
+          gameResult = {
+            status: "win",
+            winner: playerTurn === 1 ? 2 : 1,
+          };
         }
 
         if (previousItem !== grid[j][i]) {
@@ -77,7 +84,10 @@ const Grid: React.FC<Props> = ({}) => {
       }
 
       if (previousItem === grid[i][i] && grid.length - 1 === i) {
-        gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
+        gameResult = {
+          status: "win",
+          winner: playerTurn === 1 ? 2 : 1,
+        };
       }
 
       if (previousItem !== grid[i][i]) {
@@ -97,7 +107,10 @@ const Grid: React.FC<Props> = ({}) => {
       }
 
       if (previousItem === grid[i][grid.length - 1 - i] && 0 === i) {
-        gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
+        gameResult = {
+          status: "win",
+          winner: playerTurn === 1 ? 2 : 1,
+        };
       }
 
       if (previousItem !== grid[i][grid.length - 1 - i]) {
@@ -105,7 +118,7 @@ const Grid: React.FC<Props> = ({}) => {
       }
     }
 
-    if (gameResult === "continues") {
+    if (gameResult.status === "continues") {
       let rows = grid.map((row: any) => {
         return row.findIndex((item: any) => {
           return item === 0;
@@ -119,11 +132,12 @@ const Grid: React.FC<Props> = ({}) => {
       });
 
       if (isThereEmptyCells === -1) {
-        gameResult = "draw";
+        gameResult = {
+          status: "draw",
+          winner: 0,
+        };
       }
     }
-    const arr = [1, 2, 3, 5, -1];
-    console.log(arr.some((item) => item > 10));
 
     dispatch(setGameResult(gameResult));
   };
@@ -141,12 +155,8 @@ const Grid: React.FC<Props> = ({}) => {
                       mark={item}
                       row={row}
                       column={column}
-                      disabled={!(gameResult === "continues")}
+                      disabled={!(gameResult.status === "continues")}
                     />
-                    {console.log(
-                      "game result = " + !(gameResult === "continues"),
-                      gameResult
-                    )}
                   </Td>
                 );
               })}

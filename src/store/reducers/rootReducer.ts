@@ -6,7 +6,7 @@ const grid = createGrid(3, 3);
 const initState: RootState = {
   grid,
   playerTurn: 1,
-  gameResult: "continues",
+  gameResult: { status: "continues", winner: 0 },
   gameHistory: [],
 };
 
@@ -44,8 +44,9 @@ export default function rootReducer(state = initState, action: any) {
     case "START_NEW_GAME":
       return {
         ...state,
-        playerTurn: "x",
-        gameResult: "continues",
+        playerTurn: 1,
+        gameResult: { status: "continues", winner: 0 },
+        gameHistory: [],
         grid,
       };
 
@@ -60,6 +61,7 @@ export default function rootReducer(state = initState, action: any) {
           {
             id: newId,
             grid: action.payload.grid,
+            playerTurn: action.payload.playerTurn,
           },
         ],
       };
@@ -74,7 +76,10 @@ export default function rootReducer(state = initState, action: any) {
         gameHistory: state.gameHistory.filter((item: any) => {
           return item.id < action.payload.id;
         }),
-        playerTurn: action.payload.playerTurn,
+        //@ts-ignore
+        playerTurn: state.gameHistory.find((item: any) => {
+          return item.id === action.payload.id;
+        }).playerTurn,
       };
 
     default:
