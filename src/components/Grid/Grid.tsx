@@ -10,105 +10,105 @@ interface Props {}
 
 const Grid: React.FC<Props> = ({}) => {
   const dispatch = useDispatch();
-  const matrix = useSelector((state: any) => state.matrix);
+  const grid = useSelector((state: any) => state.grid);
   const gameResult = useSelector((state: any) => state.gameResult);
   const playerTurn = useSelector((state: any) => state.playerTurn);
 
   useEffect(() => {
-    checkGameEnd(matrix);
-  }, [matrix]);
+    checkGameEnd(grid);
+  }, [grid]);
 
-  const checkGameEnd = (matrix: any) => {
+  const checkGameEnd = (grid: any) => {
     let gameResult = "continues";
 
-    for (let i = 0; i < matrix.length; i++) {
+    for (let i = 0; i < grid.length; i++) {
       let previousItem: any;
-      for (let j = 0; j < matrix[i].length; j++) {
+      for (let j = 0; j < grid[i].length; j++) {
         if (!j) {
-          previousItem = matrix[i][j];
+          previousItem = grid[i][j];
           continue;
         }
 
-        if (!matrix[i][j]) {
+        if (!grid[i][j]) {
           break;
         }
 
-        if (previousItem === matrix[i][j] && matrix[i].length - 1 === j) {
+        if (previousItem === grid[i][j] && grid[i].length - 1 === j) {
           gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
         }
 
-        if (previousItem !== matrix[i][j]) {
+        if (previousItem !== grid[i][j]) {
           break;
         }
       }
     }
 
-    for (let i = 0; i < matrix[0].length; i++) {
+    for (let i = 0; i < grid[0].length; i++) {
       let previousItem: any;
-      for (let j = 0; j < matrix.length; j++) {
+      for (let j = 0; j < grid.length; j++) {
         if (!j) {
-          previousItem = matrix[j][i];
+          previousItem = grid[j][i];
           continue;
         }
 
-        if (!matrix[j][i]) {
+        if (!grid[j][i]) {
           break;
         }
 
-        if (previousItem === matrix[j][i] && matrix.length - 1 === j) {
+        if (previousItem === grid[j][i] && grid.length - 1 === j) {
           gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
         }
 
-        if (previousItem !== matrix[j][i]) {
+        if (previousItem !== grid[j][i]) {
           break;
         }
       }
     }
 
     let previousItem: any;
-    for (let i = 0; i < matrix.length; i++) {
+    for (let i = 0; i < grid.length; i++) {
       if (!i) {
-        previousItem = matrix[i][i];
+        previousItem = grid[i][i];
         continue;
       }
 
-      if (!matrix[i][i]) {
+      if (!grid[i][i]) {
         break;
       }
 
-      if (previousItem === matrix[i][i] && matrix.length - 1 === i) {
+      if (previousItem === grid[i][i] && grid.length - 1 === i) {
         gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
       }
 
-      if (previousItem !== matrix[i][i]) {
+      if (previousItem !== grid[i][i]) {
         break;
       }
     }
     previousItem = null;
 
-    for (let i = matrix.length - 1; i >= 0; i--) {
-      if (i === matrix.length - 1) {
-        previousItem = matrix[i][matrix.length - 1 - i];
+    for (let i = grid.length - 1; i >= 0; i--) {
+      if (i === grid.length - 1) {
+        previousItem = grid[i][grid.length - 1 - i];
         continue;
       }
 
-      if (!matrix[i][matrix.length - 1 - i]) {
+      if (!grid[i][grid.length - 1 - i]) {
         break;
       }
 
-      if (previousItem === matrix[i][matrix.length - 1 - i] && 0 === i) {
+      if (previousItem === grid[i][grid.length - 1 - i] && 0 === i) {
         gameResult = `${playerTurn === "x" ? "o" : "x"} win`;
       }
 
-      if (previousItem !== matrix[i][matrix.length - 1 - i]) {
+      if (previousItem !== grid[i][grid.length - 1 - i]) {
         break;
       }
     }
 
     if (gameResult === "continues") {
-      let rows = matrix.map((row: any) => {
+      let rows = grid.map((row: any) => {
         return row.findIndex((item: any) => {
-          return item === "";
+          return item === 0;
         });
 
         return;
@@ -131,7 +131,7 @@ const Grid: React.FC<Props> = ({}) => {
   return (
     <Table>
       <tbody>
-        {matrix.map((item: any, row: number) => {
+        {grid.map((item: any, row: number) => {
           return (
             <Tr key={row}>
               {item.map((item: any, column: number) => {
@@ -143,6 +143,10 @@ const Grid: React.FC<Props> = ({}) => {
                       column={column}
                       disabled={!(gameResult === "continues")}
                     />
+                    {console.log(
+                      "game result = " + !(gameResult === "continues"),
+                      gameResult
+                    )}
                   </Td>
                 );
               })}

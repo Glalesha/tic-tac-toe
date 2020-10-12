@@ -1,20 +1,21 @@
-const initState: any = {
-  matrix: [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ],
-  playerTurn: "x",
+import { RootState } from "../../types";
+import { createGrid } from "../../api/index";
+
+const grid = createGrid(3, 3);
+
+const initState: RootState = {
+  grid,
+  playerTurn: 1,
   gameResult: "continues",
   gameHistory: [],
 };
 
 export default function rootReducer(state = initState, action: any) {
   switch (action.type) {
-    case "CHANGE_MATRIX":
+    case "CHANGE_GRID":
       return {
         ...state,
-        matrix: state.matrix.map((rowItem: any, rowNumber: number) => {
+        grid: state.grid.map((rowItem: any, rowNumber: number) => {
           return rowItem.map((columnItem: any, columnNumber: number) => {
             if (
               columnNumber === action.payload.column &&
@@ -31,7 +32,7 @@ export default function rootReducer(state = initState, action: any) {
     case "CHANGE_PLAYER_TURN":
       return {
         ...state,
-        playerTurn: state.playerTurn === "x" ? "o" : "x",
+        playerTurn: state.playerTurn === 1 ? 2 : 1,
       };
 
     case "SET_GAME_RESULT":
@@ -45,26 +46,20 @@ export default function rootReducer(state = initState, action: any) {
         ...state,
         playerTurn: "x",
         gameResult: "continues",
-        matrix: [
-          ["", "", ""],
-          ["", "", ""],
-          ["", "", ""],
-        ],
+        grid,
       };
 
     case "ADD_TURN":
       const newId = state.gameHistory.length
         ? +state.gameHistory[state.gameHistory.length - 1].id + 1
         : 1;
-      console.log(action.payload.matrix);
       return {
         ...state,
         gameHistory: [
           ...state.gameHistory,
           {
-            name: `move to ${newId}`,
             id: newId,
-            matrix: action.payload.matrix,
+            grid: action.payload.grid,
           },
         ],
       };
@@ -72,9 +67,10 @@ export default function rootReducer(state = initState, action: any) {
     case "GO_TO_TURN":
       return {
         ...state,
-        matrix: state.gameHistory.find((item: any) => {
+        //@ts-ignore
+        grid: state.gameHistory.find((item: any) => {
           return item.id === action.payload.id;
-        }).matrix,
+        }).grid,
         gameHistory: state.gameHistory.filter((item: any) => {
           return item.id < action.payload.id;
         }),

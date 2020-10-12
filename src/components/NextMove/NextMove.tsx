@@ -6,7 +6,25 @@ const NextMove: React.FC<{}> = () => {
   //@ts-ignore
   const playerTurn = useSelector((state) => state.playerTurn);
 
-  return <p>Next move is by {playerTurn}</p>;
+  return (
+    <NextMoveText>
+      Next move is by
+      <Mark color={playerTurn === 1 ? "#0fbe89" : "#ffc239"}>
+        {playerTurn === 1 ? "x" : "o"}
+      </Mark>
+    </NextMoveText>
+  );
 };
 
 export default NextMove;
+
+const NextMoveText = styled.h3`
+  color: white;
+  font-size: 16px;
+  font-weight: 300;
+`;
+
+const Mark = styled.span`
+  margin-left: 10px;
+  color: ${(props) => props.color};
+`;
